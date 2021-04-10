@@ -4,9 +4,8 @@ services:
   nginx:
     restart: always
     image: staticfloat/nginx-certbot
-    ports:
-      - 80:80/tcp
-      - 443:443/tcp
+    expose:
+      - "80"
     environment:
       CERTBOT_EMAIL: mayn13@gmail.com
       ENVSUBST_VARS: FQDN
