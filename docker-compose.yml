@@ -1,7 +1,21 @@
 version: '3.1'
 
 services:
-
+  nginx:
+    restart: always
+    image: staticfloat/nginx-certbot
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    environment:
+      CERTBOT_EMAIL: mayn13@gmail.com
+      ENVSUBST_VARS: FQDN
+      FQDN: "*.yayoflautasmadrid.org"
+    volumes:
+      - ./conf.d:/etc/nginx/user.conf.d:ro
+      - letsencrypt:/etc/letsencrypt
+    depends_on:
+      - wordpress
   wordpress:
     image: wordpress
     restart: always
@@ -28,3 +42,4 @@ services:
 volumes:
   wordpress:
   db:
+  letsencrypt:
