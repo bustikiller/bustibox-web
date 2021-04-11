@@ -4,8 +4,9 @@ services:
   nginx:
     restart: always
     image: staticfloat/nginx-certbot
-    expose:
-      - "80"
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
     environment:
       CERTBOT_EMAIL: mayn13@gmail.com
       ENVSUBST_VARS: FQDN
@@ -18,8 +19,8 @@ services:
   wordpress:
     image: wordpress
     restart: always
-    ports:
-      - 80:80
+    expose:
+      - "80"
     environment:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
