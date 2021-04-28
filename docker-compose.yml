@@ -10,36 +10,42 @@ services:
     environment:
       CERTBOT_EMAIL: mayn13@gmail.com
       ENVSUBST_VARS: FQDN
-      FQDN: "*.yayoflautasmadrid.org"
+      FQDN: "*.kimball.com.es"
     volumes:
       - ./conf.d:/etc/nginx/user.conf.d:ro
       - letsencrypt:/etc/letsencrypt
     depends_on:
       - wordpress
-  wordpress:
-    image: wordpress
-    restart: always
+  drupal:
+    restart: unless-stopped
+    image: drupal:8.9.13-apache
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     expose:
       - "80"
-    environment:
-      WORDPRESS_DB_HOST: db
-      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
-      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+    depends_on:
+      - db
     volumes:
-      - wordpress:/var/www/html
+      - /home/ubuntu/salamandra/modules:/var/www/html/modules
+      - /home/ubuntu/salamandra/profiles:/var/www/html/profiles
+      - /home/ubuntu/salamandra/themes:/var/www/html/themes
+      - /home/ubuntu/salamandra/sites:/var/www/html/sites
+      - /home/ubuntu/salamandra/private_files:/var/www/salamandra_private
 
   db:
-    image: mysql:5.7
-    restart: always
+    restart: unless-stopped
+    image: postgres:12.4-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
     environment:
-      MYSQL_DATABASE: ${WORDPRESS_DB_NAME}
-      MYSQL_USER: ${WORDPRESS_DB_USER}
-      MYSQL_PASSWORD: ${WORDPRESS_DB_PASSWORD}
-      MYSQL_RANDOM_ROOT_PASSWORD: '1'
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - db:/var/lib/mysql
+      - pgdata:/var/lib/postgresql/data
 volumes:
-  wordpress:
-  db:
+  pgdata:
   letsencrypt:
