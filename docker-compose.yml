@@ -18,7 +18,7 @@ services:
       - drupal
   drupal:
     restart: unless-stopped
-    image: drupal:8.9.19-apache
+    image: exploradoresdemadrid/salamandra:latest
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
