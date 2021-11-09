@@ -16,7 +16,7 @@ tar -czvf $BACKUPS_DIR/$backup_name.tar.gz $backup_name.sql
 rm -v ./*.sql
 
 ## Configure file backup with rclone
-# rclone copy --immutable /home/ubuntu/salamandra/private_files tecnologia_edm:salamandra/private_files
+rclone copy --immutable /home/ubuntu/bustibox/private_files bustibox:files
 rclone copy --immutable $BACKUPS_DIR bustibox:databases
 
 ## Cleanup after backups
